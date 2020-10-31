@@ -1,9 +1,8 @@
 # coding: utf-8
 from measure import measure
-from util import spiModule
+from util import spiModule, voicePlay
 import RPi.GPIO as GPIO
 import time
-import os
 
 def main():
     GPIO.setmode(GPIO.BCM)
@@ -23,7 +22,10 @@ def main():
             val = 1023 - ch0_val
             print(val)
             if val > threshold:
-                os.system('sh ~/Laboratory/unkoDetector/src/unkoDetector/voice/hello.sh')
+                # When a fecal scent is detected, an audio file is played back.
+                # You can choose how to play it back according to your own environment.
+                voice = "うんこのにおいがします．はやくかたづけてください"
+                voicePlay(voice)
 
             GPIO.output(22,False)
             time.sleep(0.500)
