@@ -18,6 +18,7 @@ def main():
     ch0 = 0x00
     spi = spiModule.setup()
     threshold = 160
+    judge = False
 
     try:
         while 1:
@@ -27,9 +28,17 @@ def main():
             ch0_val = measure(spi, ch0)
             val = 1023 - ch0_val
             print(val)
-            if val > threshold:
+            if val > threshold and judge == False:
+                judge = True
                 bot.send(
-                    message = "うんちをしました！！"
+                    message = "出たよ！！",
+                    image = "/home/pi/Laboratory/unkoDetector/src/unkoDetector/photo/mafuyu.jpeg"
+                )
+            elif val < threshold and judge == True:
+                judge = False
+                bot.send(
+                    message = "片付けてくれてありがとう！！",
+                    image = "/home/pi/Laboratory/unkoDetector/src/unkoDetector/photo/latte.jpeg"
                 )
 
             GPIO.output(22,False)
