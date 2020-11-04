@@ -26,7 +26,7 @@ def main():
     
     # Warming up to remove outliers．
     print("ウォームアップを開始します")
-    for i in range(5):
+    for i in range(20):
         GPIO.output(22,True)
         GPIO.output(17,True)
         time.sleep(0.050)
@@ -49,7 +49,7 @@ def main():
 
     # Trials for Threshold Determination.
     print("基準値の測定を開始します")
-    for i in range(5):
+    for i in range(20):
         GPIO.output(22,True)
         GPIO.output(17,True)
         time.sleep(0.050)
