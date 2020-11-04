@@ -27,6 +27,13 @@ def main():
 
     # Warming up to remove outliers．
     print("ウォームアップを開始します")
+    for i in range(20):
+        GPIO.output(22,True)
+        GPIO.output(17,True)
+        time.sleep(0.050)
+        GPIO.output(22,False)
+        GPIO.output(17,False)
+        time.sleep(0.050)
     for i in tqdm(range(outlier)):
         GPIO.output(22,True)
         time.sleep(0.100)
@@ -43,6 +50,13 @@ def main():
 
     # Trials for Threshold Determination.
     print("基準値の測定を開始します")
+    for i in range(20):
+        GPIO.output(22,True)
+        GPIO.output(17,True)
+        time.sleep(0.050)
+        GPIO.output(22,False)
+        GPIO.output(17,False)
+        time.sleep(0.050)
     for i in tqdm(range(trial)):
         GPIO.output(22,True)
         time.sleep(0.100)
