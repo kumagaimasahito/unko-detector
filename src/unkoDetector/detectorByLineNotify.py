@@ -19,13 +19,20 @@ def main():
 
     ch0 = 0x00
     spi = spiModule.setup()
-    trial = 100
-    outlier = 20
+    trial = 50
+    outlier = 10
     threshold_list = [0.0]*trial
     scaling = 0.05
     
     # Warming up to remove outliers．
     print("ウォームアップを開始します")
+    for i in range(5):
+        GPIO.output(22,True)
+        GPIO.output(17,True)
+        time.sleep(0.050)
+        GPIO.output(22,False)
+        GPIO.output(17,False)
+        time.sleep(0.050)
     for i in tqdm(range(outlier)):
         GPIO.output(22,True)
         time.sleep(0.100)
@@ -42,6 +49,13 @@ def main():
 
     # Trials for Threshold Determination.
     print("基準値の測定を開始します")
+        for i in range(5):
+        GPIO.output(22,True)
+        GPIO.output(17,True)
+        time.sleep(0.050)
+        GPIO.output(22,False)
+        GPIO.output(17,False)
+        time.sleep(0.050)
     for i in tqdm(range(trial)):
         GPIO.output(22,True)
         time.sleep(0.100)
@@ -75,14 +89,14 @@ def main():
             print(val)
             if val_before-threshold < threshold*factor and threshold*factor < val-threshold:
                 bot.send(message = str(int(factor*100)) + "％においが悪化")
+                print(str(int(factor*100)) + "％においが悪化")
                 imp.append(threshold*(1.0+factor))
-                print(imp)
                 factor+=scaling
             elif len(imp) > 0 and val <= imp[-1]:
                 factor = len(imp)*scaling
-                bot.send(message = "においが" + str(int(factor*100)-1) + "％に改善")
+                bot.send(message = "においが" + str(int((factor-scaling)*100)) + "％に改善")
+                print("においが" + str(int((factor-scaling)*100)) + "％に改善")
                 del imp[-1]
-                print(imp)
             val_before = val
     
             GPIO.output(22,False)
