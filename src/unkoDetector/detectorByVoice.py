@@ -3,6 +3,7 @@ from measure import measure
 from util import spiModule, voicePlay
 import RPi.GPIO as GPIO
 import time
+from tqdm import tqdm
 
 def main():
     GPIO.setmode(GPIO.BCM)
