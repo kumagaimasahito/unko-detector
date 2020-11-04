@@ -97,7 +97,7 @@ def main():
                 factor = len(imp)*scaling
                 bot.send(message = "においが" + str(int((factor-scaling)*100)) + "％に改善")
                 print("においが" + str(int((factor-scaling)*100)) + "％に改善")
-                voicePlay(voice = "くさされべるが" + str(int(factor*100)) + "ぱーせんとにもどりました")
+                voicePlay(voice = "くさされべるが" + str(int((factor-scaling)*100)) + "ぱーせんとにもどりました")
                 del imp[-1]
             val_before = val
     
