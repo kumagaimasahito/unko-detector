@@ -90,12 +90,14 @@ def main():
             if val_before-threshold < threshold*factor and threshold*factor < val-threshold:
                 bot.send(message = str(int(factor*100)) + "％においが悪化")
                 print(str(int(factor*100)) + "％においが悪化")
+                voicePlay(voice = "くさされべる" + str(int(factor*100)) + "ぱーせんとです")
                 imp.append(threshold*(1.0+factor))
                 factor+=scaling
             elif len(imp) > 0 and val <= imp[-1]:
                 factor = len(imp)*scaling
                 bot.send(message = "においが" + str(int((factor-scaling)*100)) + "％に改善")
                 print("においが" + str(int((factor-scaling)*100)) + "％に改善")
+                voicePlay(voice = "くさされべるが" + str(int(factor*100)) + "ぱーせんとにもどりました")
                 del imp[-1]
             val_before = val
     
