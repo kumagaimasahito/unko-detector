@@ -1,6 +1,6 @@
 # coding: utf-8
 from measure import measure
-from util import spiModule, LINENotifyBot
+from util import spiModule, LINENotifyBot, voicePlay
 import RPi.GPIO as GPIO
 import time
 import os
