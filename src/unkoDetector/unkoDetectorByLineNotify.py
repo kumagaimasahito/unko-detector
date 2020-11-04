@@ -108,7 +108,8 @@ def main():
             time.sleep(0.500)
 
     except KeyboardInterrupt:
-        pass
+        GPIO.output(22,False)
+        GPIO.output(17,False)
 
     spi.close()
 
