@@ -22,7 +22,7 @@ def main():
     trial = 50
     outlier = 10
     threshold_list = [0.0]*trial
-    scaling = 0.05
+    scaling = 0.025
     
     # Warming up to remove outliers．
     print("ウォームアップを開始します")
