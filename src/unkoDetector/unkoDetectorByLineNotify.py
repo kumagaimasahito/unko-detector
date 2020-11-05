@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 import time
 import os
 from tqdm import tqdm
+import requests
 
 def main():
     # Execute the following command in advance on the shell.
@@ -12,7 +13,12 @@ def main():
     access_token = os.environ["LINE_NOTIFY_KEY"]
     bot = LINENotifyBot(access_token=access_token)
     bot.send(message = "においの検出を開始しました")
+    
+    # Setting up a Google spreadsheet to enter sensor data
+    # export "GAS_URL"=<YOUR_GAS_URL>
+    gas_url = os.environ["GAS_URL"]
 
+    # Setting of GPIO pins
     GPIO.setmode(GPIO.BCM)
     GPIO.setup(17,GPIO.OUT)
     GPIO.setup(22,GPIO.OUT)
@@ -27,52 +33,29 @@ def main():
 
     # Warming up to remove outliers．
     print("ウォームアップを開始します")
-    for i in range(20):
-        GPIO.output(22,True)
-        GPIO.output(17,True)
-        time.sleep(0.050)
-        GPIO.output(22,False)
-        GPIO.output(17,False)
-        time.sleep(0.050)
     for i in tqdm(range(outlier)):
         GPIO.output(22,True)
-        time.sleep(0.100)
-        
+        time.sleep(0.005)
         GPIO.output(22,False)
-        time.sleep(0.100)
-            
         GPIO.output(17,True)
-        time.sleep(0.100)
-
+        time.sleep(0.008)
         GPIO.output(17,False)
-        time.sleep(0.100)
+        time.sleep(0.237)
     print("ウォームアップが終了しました")
 
     # Trials for Threshold Determination.
     print("基準値の測定を開始します")
-    for i in range(20):
-        GPIO.output(22,True)
-        GPIO.output(17,True)
-        time.sleep(0.050)
-        GPIO.output(22,False)
-        GPIO.output(17,False)
-        time.sleep(0.050)
     for i in tqdm(range(trial)):
         GPIO.output(22,True)
-        time.sleep(0.100)
-
+        time.sleep(0.005)
         ch0_val = measure(spi, ch0)
+        GPIO.output(22,False)
+        GPIO.output(17,True)
+        time.sleep(0.008)
+        GPIO.output(17,False)
+        time.sleep(0.237)
         val = 1023 - ch0_val
         threshold_list[i] = val
-        
-        GPIO.output(22,False)
-        time.sleep(0.100)
-            
-        GPIO.output(17,True)
-        time.sleep(0.100)
-
-        GPIO.output(17,False)
-        time.sleep(0.100)
     threshold = sum(threshold_list) / len(threshold_list)
     #bot.send(message = "基準値を" + str(threshold) + "に決定しました．")
     print("基準値を" + str(threshold) + "に決定しました")
@@ -80,11 +63,16 @@ def main():
     try:
         while 1:
             GPIO.output(22,True)
-            time.sleep(0.500)
-
+            time.sleep(0.005)
             ch0_val = measure(spi, ch0)
             val = 1023 - ch0_val
+            GPIO.output(22,False)
+            GPIO.output(17,True)
+            time.sleep(0.008)
+            GPIO.output(17,False)
+            time.sleep(0.237)
             print(val)
+            requests.get(gas_url + "?data=" + str(val))
             if val > threshold*(1.0+scaling) and judge == False:
                 judge = True
                 bot.send(
@@ -97,15 +85,6 @@ def main():
                     message = "片付けてくれてありがとう！！",
                     image = "/home/pi/Laboratory/unkoDetector/src/unkoDetector/photo/latte.jpeg"
                 )
-
-            GPIO.output(22,False)
-            time.sleep(0.500)
-            
-            GPIO.output(17,True)
-            time.sleep(0.500)
-
-            GPIO.output(17,False)
-            time.sleep(0.500)
 
     except KeyboardInterrupt:
         GPIO.output(22,False)
